@@ -14,20 +14,21 @@ jobs:
 
       - restore_cache:
           keys:
-            - v1-pkg-cache
+            - gopkg-{{ .Branch }}-{{ checksum "Gopkg.lock" }}
 
+      - run: dep ensure
       - run: go get github.com/jstemmer/go-junit-report
 
       - run:
           name: Run unit tests
           command: |
             trap "go-junit-report <${TEST_RESULTS}/go-test.out > ${TEST_RESULTS}/go-test-report.xml" EXIT
-            make test | tee ${TEST_RESULTS}/go-test.out
+            go test -v ./... | tee ${TEST_RESULTS}/go-test.out
 
       - run: go build -o workdir/congress .
 
       - save_cache:
-          key: v1-pkg-cache
+          key: gopkg-{{ .Branch }}-{{ checksum "Gopkg.lock" }}
           paths:
             - "/go/pkg"
 
