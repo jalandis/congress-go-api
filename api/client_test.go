@@ -8,8 +8,8 @@ import (
 	"testing"
 	"time"
 
-	"jalandis.com/congress/api"
-	"jalandis.com/congress/cache"
+	"github.com/jalandis/congress-go-api/api"
+	"github.com/jalandis/congress-go-api/cache"
 )
 
 func setupTest(t *testing.T) (*httptest.Server, api.ApiClient) {
@@ -48,10 +48,10 @@ func TestApi(t *testing.T) {
 		t.Run("Test API Upcoming Bills", func(t *testing.T) {
 			t.Parallel()
 
-			server, api := setupTest(t)
+			server, apiClient := setupTest(t)
 			defer server.Close()
 
-			result, err := api.GetUpcomingBills("house")
+			result, err := apiClient.GetUpcomingBills("house")
 			if err != nil {
 				t.Errorf("Error requesting upcoming bills: %s", err)
 			}
@@ -64,10 +64,10 @@ func TestApi(t *testing.T) {
 		t.Run("Test API Cosponsors", func(t *testing.T) {
 			t.Parallel()
 
-			server, api := setupTest(t)
+			server, apiClient := setupTest(t)
 			defer server.Close()
 
-			result, err := api.GetBillCosponsers(115, "hr4249")
+			result, err := apiClient.GetBillCosponsers(115, "hr4249")
 			if err != nil {
 				t.Errorf("Error requesting bill cosponsors: %s", err)
 			}
@@ -80,9 +80,9 @@ func TestApi(t *testing.T) {
 		t.Run("Test API caching", func(t *testing.T) {
 			t.Parallel()
 
-			server, api := setupTest(t)
+			server, apiClient := setupTest(t)
 
-			result, err := api.GetBillCosponsers(115, "hr4249")
+			result, err := apiClient.GetBillCosponsers(115, "hr4249")
 			if err != nil {
 				t.Errorf("Error requesting bill cosponsors: %s", err)
 			}
@@ -94,7 +94,7 @@ func TestApi(t *testing.T) {
 			// Closing server to confirm no more requests sent.
 			server.Close()
 
-			result, err = api.GetBillCosponsers(115, "hr4249")
+			result, err = apiClient.GetBillCosponsers(115, "hr4249")
 			if err != nil {
 				t.Errorf("Error requesting bill cosponsors: %s", err)
 			}

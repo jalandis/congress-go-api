@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       - image: circleci/golang:1.10
-    working_directory: /go/src/jalandis.com/congress
+    working_directory: /go/src/github.com/jalandis/congress-go-api
 
     environment:
       TEST_RESULTS: /tmp/test-results

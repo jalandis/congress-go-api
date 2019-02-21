@@ -17,8 +17,8 @@ import (
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 
-	"jalandis.com/congress/api"
-	"jalandis.com/congress/cache"
+	"github.com/jalandis/congress-go-api/api"
+	"github.com/jalandis/congress-go-api/cache"
 )
 
 // Application configuration.

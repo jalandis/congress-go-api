@@ -8,8 +8,8 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/jalandis/congress-go-api/cache"
 	log "github.com/sirupsen/logrus"
-	"jalandis.com/congress/cache"
 )
 
 var (
