@@ -1,0 +1,197 @@
+{
+   "status":"OK",
+   "copyright":"Copyright (c) 2017 Pro Publica Inc. All Rights Reserved.",
+   "results":[
+      {
+         "congress":"114",
+         "bill":"H.R.4249",
+         "url_number":"hr4249",
+         "title":"Police Agency Investigation Improvement Act of 2015",
+         "sponsor_title":"Rep.",
+         "sponsor_id":"J000288",
+         "sponsor_name":"Hank Johnson",
+         "sponsor_state":"GA",
+         "sponsor_party":"D",
+         "sponsor_uri":"https://api.propublica.org/congress/v1/members/J000288.json",
+         "introduced_date":"2015-12-15",
+         "number_of_cosponsors":18,
+         "committees":"House Judiciary Committee",
+         "latest_major_action_date":"2016-01-15",
+         "latest_major_action":"Referred to the Subcommittee on Crime, Terrorism, Homeland Security, and Investigations.",
+         "house_passage_vote":null,
+         "senate_passage_vote":null,
+         "cosponsors_by_party":[
+            {
+               "party":{
+                  "id":"D",
+                  "sponsors":"18"
+               }
+            }
+         ],
+         "cosponsors":[
+            {
+               "cosponsor_id":"J000032",
+               "name":"Sheila  Jackson Lee",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"TX",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/J000032.json",
+               "date":"2016-01-25"
+            },
+            {
+               "cosponsor_id":"M001137",
+               "name":"Gregory W. Meeks",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"NY",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/M001137.json",
+               "date":"2016-01-25"
+            },
+            {
+               "cosponsor_id":"C001068",
+               "name":"Steve Cohen",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"TN",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/C001068.json",
+               "date":"2016-01-25"
+            },
+            {
+               "cosponsor_id":"R000515",
+               "name":"Bobby L. Rush",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"IL",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/R000515.json",
+               "date":"2016-01-25"
+            },
+            {
+               "cosponsor_id":"R000588",
+               "name":"Cedric Richmond",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"LA",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/R000588.json",
+               "date":"2016-01-25"
+            },
+            {
+               "cosponsor_id":"E000179",
+               "name":"Eliot L. Engel",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"NY",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/E000179.json",
+               "date":"2016-01-25"
+            },
+            {
+               "cosponsor_id":"G000556",
+               "name":"Alan Grayson",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"FL",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/G000556.json",
+               "date":"2016-01-25"
+            },
+            {
+               "cosponsor_id":"H000324",
+               "name":"Alcee L. Hastings",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"FL",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/H000324.json",
+               "date":"2016-02-01"
+            },
+            {
+               "cosponsor_id":"B001270",
+               "name":"Karen Bass",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"CA",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/B001270.json",
+               "date":"2016-02-01"
+            },
+            {
+               "cosponsor_id":"C001072",
+               "name":"André  Carson",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"IN",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/C001072.json",
+               "date":"2016-02-01"
+            },
+            {
+               "cosponsor_id":"C000984",
+               "name":"Elijah E. Cummings",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"MD",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/C000984.json",
+               "date":"2016-02-02"
+            },
+            {
+               "cosponsor_id":"T000472",
+               "name":"Mark Takano",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"CA",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/T000472.json",
+               "date":"2016-02-02"
+            },
+            {
+               "cosponsor_id":"S001157",
+               "name":"David Scott",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"GA",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/S001157.json",
+               "date":"2016-02-03"
+            },
+            {
+               "cosponsor_id":"N000147",
+               "name":"Eleanor Holmes Norton",
+               "cosponsor_title":"Del.",
+               "cosponsor_state":"DC",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/N000147.json",
+               "date":"2016-02-09"
+            },
+            {
+               "cosponsor_id":"M001166",
+               "name":"Jerry McNerney",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"CA",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/M001166.json",
+               "date":"2016-02-12"
+            },
+            {
+               "cosponsor_id":"R000053",
+               "name":"Charles B. Rangel",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"NY",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/R000053.json",
+               "date":"2016-02-23"
+            },
+            {
+               "cosponsor_id":"F000455",
+               "name":"Marcia L. Fudge",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"OH",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/F000455.json",
+               "date":"2016-02-26"
+            },
+            {
+               "cosponsor_id":"W000187",
+               "name":"Maxine Waters",
+               "cosponsor_title":"Rep.",
+               "cosponsor_state":"CA",
+               "cosponsor_party":"D",
+               "cosponsor_uri":"https://api.propublica.org/congress/v1/members/W000187.json",
+               "date":"2016-03-15"
+            }
+         ]
+      }
+   ]
+}
