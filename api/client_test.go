@@ -47,8 +47,8 @@ func setupTest(t *testing.T) (*httptest.Server, api.ApiClient) {
 
 func TestApi(t *testing.T) {
 
-	t.Run("Test API Wrappers", func(t *testing.T) {
-		t.Run("Test API Upcoming Bills", func(t *testing.T) {
+	t.Run("Test ProPublica API Wrappers", func(t *testing.T) {
+		t.Run("Test Get Upcoming Bills", func(t *testing.T) {
 			t.Parallel()
 
 			server, apiClient := setupTest(t)
@@ -64,7 +64,7 @@ func TestApi(t *testing.T) {
 			}
 		})
 
-		t.Run("Test API Cosponsors", func(t *testing.T) {
+		t.Run("Test Get Cosponsors", func(t *testing.T) {
 			t.Parallel()
 
 			server, apiClient := setupTest(t)
@@ -73,6 +73,22 @@ func TestApi(t *testing.T) {
 			result, err := apiClient.GetBillCosponsers(115, "hr4249")
 			if err != nil {
 				t.Errorf("Error requesting bill cosponsors: %s", err)
+			}
+
+			if len(result) <= 0 {
+				t.Errorf("API returned a bad response")
+			}
+		})
+
+		t.Run("Test Get Statements", func(t *testing.T) {
+			t.Parallel()
+
+			server, apiClient := setupTest(t)
+			defer server.Close()
+
+			result, err := apiClient.GetBillStatements(115, "s19")
+			if err != nil {
+				t.Errorf("Error requesting bill statements: %s", err)
 			}
 
 			if len(result) <= 0 {
@@ -107,7 +123,7 @@ func TestApi(t *testing.T) {
 			}
 		})
 
-		t.Run("Test API Bill Cosponsor Http Response", func(t *testing.T) {
+		t.Run("Test Handling Bill Cosponsor Request", func(t *testing.T) {
 			t.Parallel()
 			_, apiClient := setupTest(t)
 
@@ -119,6 +135,48 @@ func TestApi(t *testing.T) {
 			})
 
 			apiClient.HandleBillCosponsors(rw, req)
+
+			if rw.Code != http.StatusOK {
+				t.Errorf("Expected status OK. Got: %d", rw.Code)
+			}
+
+			results := rw.Body.String()
+			if !strings.HasPrefix(results, "{\"data\":[{") {
+				t.Errorf("Expected data results: %s", results)
+			}
+		})
+
+		t.Run("Test Handling Bill Statement Request", func(t *testing.T) {
+			t.Parallel()
+			_, apiClient := setupTest(t)
+
+			rw := httptest.NewRecorder()
+			req := httptest.NewRequest(http.MethodGet, "/", nil)
+			req = mux.SetURLVars(req, map[string]string{
+				"congressId": "115",
+				"billId":     "s19",
+			})
+
+			apiClient.HandleBillStatements(rw, req)
+
+			if rw.Code != http.StatusOK {
+				t.Errorf("Expected status OK. Got: %d", rw.Code)
+			}
+
+			results := rw.Body.String()
+			if !strings.HasPrefix(results, "{\"data\":[{") {
+				t.Errorf("Expected data results: %s", results)
+			}
+		})
+
+		t.Run("Test Handling Upcoming Bills Request", func(t *testing.T) {
+			t.Parallel()
+			_, apiClient := setupTest(t)
+
+			rw := httptest.NewRecorder()
+			req := httptest.NewRequest(http.MethodGet, "/", nil)
+
+			apiClient.HandleUpcomingBills(rw, req)
 
 			if rw.Code != http.StatusOK {
 				t.Errorf("Expected status OK. Got: %d", rw.Code)
