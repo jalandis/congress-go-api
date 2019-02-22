@@ -39,9 +39,9 @@ Run Server:
 
 ### Ember FrontEnd
 
-This API project serves the [Congress Ember application](https://github.com/jalandis/congress-ember) and will require that project be built locally for testing, development, or demo.
+This API project serves a [Congress Ember application](https://github.com/jalandis/congress-ember) and will require the Ember app be built locally for testing, development, or demo.
 
-Please following the *installation* and *build* sections of the [Ember README](https://github.com/jalandis/congress-ember/blob/master/README.md) and update the path of the *EmberPath* configuration value.
+Please follow the *installation* and *build* sections of the [Ember README](https://github.com/jalandis/congress-ember/blob/master/README.md) and update the *EmberPath* value in this projects json configuration to point to the Ember dist folder.
 
 ## Helpful Go Commands
 
