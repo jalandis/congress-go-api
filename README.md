@@ -35,7 +35,7 @@ Alternative Installation of Dependencies (still in testing):
 
 Run Server:
 
-    go run github.com/jalandis/congress/main.go --config_path ./config.json
+    go run github.com/jalandis/congress-go-api/main.go --config_path ./config.json
 
 ### Ember FrontEnd
 
