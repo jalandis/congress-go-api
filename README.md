@@ -15,11 +15,11 @@ Dependencies:
 
 A [ProPublica API key](https://www.propublica.org/datastore/api/propublica-congress-api) will be required.  After registering with the Propublica Data Store, an email with the key will be sent.
 
-The application has its configuration passed in through a JSON file.  Below is an example of the required format.  Please alter paths, ports and API key to fit your environment.
+The application has its settings passed in through a [JSON configuration file](https://github.com/jalandis/congress-go-api/config_template.json).  Below is an example of the required format.  Please alter paths, ports and API key to fit your environment.
 
     {
         "Port": 8080,
-        "Public": "/home/jalandis/workspace/nodejs/congress/dist",
+        "Public": "/home/jalandis/workspace/nodejs/congress-ember/dist",
         "ApiBase": "https://api.propublica.org/congress/v1",
         "ApiKey": "***",
         "CacheTimeOut": "24h"
@@ -27,13 +27,21 @@ The application has its configuration passed in through a JSON file.  Below is a
 
 Install Dependencies:
 
-    dep ensure
-
     go get ./..
+
+Alternative Installation of Dependencies (still in testing):
+
+    dep ensure
 
 Run Server:
 
-    go run github.com/jalandis/congress/main.go --config_path ~/server.json
+    go run github.com/jalandis/congress/main.go --config_path ./config.json
+
+### Ember FrontEnd
+
+This API project serves the [Congress Ember application](https://github.com/jalandis/congress-ember) and will require that project be built locally for testing, development, or demo.
+
+Please following the *installation* and *build* sections of the [Ember README](https://github.com/jalandis/congress-ember/README.md) and update the path of the *Public* configuration value.
 
 ## Helpful Go Commands
 

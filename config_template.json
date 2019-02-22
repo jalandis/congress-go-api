@@ -1,0 +1,7 @@
+{
+    "Port": 8080,
+    "EmberPath": "/home/jalandis/workspace/nodejs/congress-ember/dist",
+    "ApiBase": "https://api.propublica.org/congress/v1",
+    "ApiKey": "",
+    "CacheTimeOut": "24h"
+}
