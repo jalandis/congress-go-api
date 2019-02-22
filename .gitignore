@@ -13,4 +13,4 @@
 
 vendor/
 
-config/server.json
+config.json
