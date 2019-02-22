@@ -15,7 +15,7 @@ Dependencies:
 
 A [ProPublica API key](https://www.propublica.org/datastore/api/propublica-congress-api) will be required.  After registering with the Propublica Data Store, an email with the key will be sent.
 
-The application has its settings passed in through a [JSON configuration file](https://github.com/jalandis/congress-go-api/config_template.json).  Below is an example of the required format.  Please alter paths, ports and API key to fit your environment.
+The application has its settings passed in through a [JSON configuration file](https://github.com/jalandis/congress-go-api/blob/master/config_template.json).  Below is an example of the required format.  Please alter paths, ports and API key to fit your environment.
 
     {
         "Port": 8080,
