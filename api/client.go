@@ -6,7 +6,12 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
+	"sync"
 	"time"
+
+	"github.com/google/jsonapi"
+	"github.com/gorilla/mux"
 
 	"github.com/jalandis/congress-go-api/cache"
 	log "github.com/sirupsen/logrus"
@@ -47,7 +52,7 @@ type UpcomingBill struct {
 }
 
 // API request for upcoming bills to {house|senate}.
-func (api ApiClient) GetUpcomingBills(chamberId string) ([]*UpcomingBill, error) {
+func (api *ApiClient) GetUpcomingBills(chamberId string) ([]*UpcomingBill, error) {
 	endpoint := fmt.Sprintf("%s/bills/upcoming/%s.json", api.Base, chamberId)
 	if value, ok := api.Cache.Get(endpoint); ok {
 		cachedResult, _ := value.([]*UpcomingBill)
@@ -88,7 +93,7 @@ type Representative struct {
 }
 
 // API request for bills sponsors.
-func (api ApiClient) GetBillCosponsers(congressId int, billId string) ([]*Representative, error) {
+func (api *ApiClient) GetBillCosponsers(congressId int, billId string) ([]*Representative, error) {
 	endpoint := fmt.Sprintf("%s/%d/bills/%s/cosponsors.json", api.Base, congressId, billId)
 	if value, ok := api.Cache.Get(endpoint); ok {
 		cachedResult, _ := value.([]*Representative)
@@ -127,7 +132,7 @@ type Statement struct {
 }
 
 // API request for bills sponsors.
-func (api ApiClient) GetBillStatements(congressId int, billSlug string) ([]*Statement, error) {
+func (api *ApiClient) GetBillStatements(congressId int, billSlug string) ([]*Statement, error) {
 	endpoint := fmt.Sprintf("%s/%d/bills/%s/statements.json", api.Base, congressId, billSlug)
 	if value, ok := api.Cache.Get(endpoint); ok {
 		cachedResult, _ := value.([]*Statement)
@@ -164,7 +169,7 @@ type Bill struct {
 }
 
 // API request for a specific bill.
-func (api ApiClient) GetBill(congressId int, billSlug string) (*Bill, error) {
+func (api *ApiClient) GetBill(congressId int, billSlug string) (*Bill, error) {
 	endpoint := fmt.Sprintf("%s/%d/bills/%s.json", api.Base, congressId, billSlug)
 	if value, ok := api.Cache.Get(endpoint); ok {
 		cachedResult, _ := value.(*Bill)
@@ -189,7 +194,7 @@ func (api ApiClient) GetBill(congressId int, billSlug string) (*Bill, error) {
 }
 
 // Wrapper for ProPublica API request injecting API key.
-func (api ApiClient) request(endpoint string, result interface{}) error {
+func (api *ApiClient) request(endpoint string, result interface{}) error {
 	log.WithFields(log.Fields{"endpoint": endpoint}).Info("Calling Propublic API")
 
 	req, _ := http.NewRequest("GET", endpoint, nil)
@@ -207,4 +212,95 @@ func (api ApiClient) request(endpoint string, result interface{}) error {
 
 	log.WithFields(log.Fields{"result": result}).Debug("Results from Propublic API")
 	return nil
+}
+
+// Converts ProPublica upcoming bills API endoint to jsonapi format for use
+// by Ember application.
+//
+// Combines upcoming bills from both the house and senate.
+func (client ApiClient) HandleUpcomingBills(rw http.ResponseWriter, req *http.Request) {
+	var wg sync.WaitGroup
+	wg.Add(2)
+
+	var houseResults []*UpcomingBill
+	var houseError error
+	var senateResults []*UpcomingBill
+	var senateError error
+
+	go func() {
+		defer wg.Done()
+		houseResults, houseError = client.GetUpcomingBills("house")
+	}()
+
+	go func() {
+		defer wg.Done()
+		senateResults, senateError = client.GetUpcomingBills("senate")
+	}()
+	wg.Wait()
+
+	if houseError != nil {
+		http.Error(rw, houseError.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	if senateError != nil {
+		http.Error(rw, senateError.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	allBills := append(houseResults, senateResults...)
+	rw.Header().Set("Content-Type", jsonapi.MediaType)
+	if err := jsonapi.MarshalPayload(rw, allBills); err != nil {
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+// Converts ProPublica bill sponsors API endoint to jsonapi format for use
+// by Ember application.
+func (client ApiClient) HandleBillCosponsors(rw http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	congressId, _ := strconv.Atoi(vars["congressId"])
+	result, apiError := client.GetBillCosponsers(congressId, vars["billId"])
+	if apiError != nil {
+		http.Error(rw, apiError.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	rw.Header().Set("Content-Type", jsonapi.MediaType)
+	if err := jsonapi.MarshalPayload(rw, result); err != nil {
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+// Converts ProPublica bill statements API endoint to jsonapi format for use
+// by Ember application.
+func (client ApiClient) HandleBillStatements(rw http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	congressId, _ := strconv.Atoi(vars["congressId"])
+	result, apiError := client.GetBillStatements(congressId, vars["billId"])
+	if apiError != nil {
+		http.Error(rw, apiError.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	rw.Header().Set("Content-Type", jsonapi.MediaType)
+	if err := jsonapi.MarshalPayload(rw, result); err != nil {
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+	}
+}
+
+// Converts ProPublica bill API endoint to jsonapi format for use by Ember application.
+func (client ApiClient) HandleBill(rw http.ResponseWriter, req *http.Request) {
+	vars := mux.Vars(req)
+	congressId, _ := strconv.Atoi(vars["congressId"])
+	result, apiError := client.GetBill(congressId, vars["billId"])
+	if apiError != nil {
+		http.Error(rw, apiError.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	rw.Header().Set("Content-Type", jsonapi.MediaType)
+	if err := jsonapi.MarshalPayload(rw, result); err != nil {
+		http.Error(rw, err.Error(), http.StatusInternalServerError)
+	}
 }

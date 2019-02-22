@@ -8,11 +8,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"strconv"
-	"sync"
 	"time"
 
-	"github.com/google/jsonapi"
 	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 
@@ -27,95 +24,6 @@ type Configuration struct {
 	ApiBase      string
 	ApiKey       string
 	CacheTimeOut string
-}
-
-// Converts ProPublica upcoming bills API endoint to jsonapi format for use
-// by Ember application.
-//
-// Combines upcoming bills from both the house and senate.
-func HandleUpcomingBills(client api.ApiClient, rw http.ResponseWriter, req *http.Request) {
-	var wg sync.WaitGroup
-	wg.Add(2)
-
-	var houseResults []*api.UpcomingBill
-	var houseError error
-	var senateResults []*api.UpcomingBill
-	var senateError error
-
-	go func() {
-		defer wg.Done()
-		houseResults, houseError = client.GetUpcomingBills("house")
-	}()
-
-	go func() {
-		defer wg.Done()
-		senateResults, senateError = client.GetUpcomingBills("senate")
-	}()
-	wg.Wait()
-
-	if houseError != nil {
-		http.Error(rw, houseError.Error(), http.StatusInternalServerError)
-	}
-
-	if senateError != nil {
-		http.Error(rw, senateError.Error(), http.StatusInternalServerError)
-	}
-
-	allBills := append(houseResults, senateResults...)
-	rw.Header().Set("Content-Type", jsonapi.MediaType)
-	if err := jsonapi.MarshalPayload(rw, allBills); err != nil {
-		http.Error(rw, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-// Converts ProPublica bill sponsors API endoint to jsonapi format for use
-// by Ember application.
-func HandleBillCosponsors(client api.ApiClient, rw http.ResponseWriter, req *http.Request) {
-	vars := mux.Vars(req)
-	congressId, _ := strconv.Atoi(vars["congressId"])
-	result, apiError := client.GetBillCosponsers(congressId, vars["billId"])
-	if apiError != nil {
-		http.Error(rw, apiError.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	rw.Header().Set("Content-Type", jsonapi.MediaType)
-	if err := jsonapi.MarshalPayload(rw, result); err != nil {
-		http.Error(rw, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-// Converts ProPublica bill statements API endoint to jsonapi format for use
-// by Ember application.
-func HandleBillStatements(client api.ApiClient, rw http.ResponseWriter, req *http.Request) {
-	vars := mux.Vars(req)
-	congressId, _ := strconv.Atoi(vars["congressId"])
-	result, apiError := client.GetBillStatements(congressId, vars["billId"])
-	if apiError != nil {
-		http.Error(rw, apiError.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	rw.Header().Set("Content-Type", jsonapi.MediaType)
-	if err := jsonapi.MarshalPayload(rw, result); err != nil {
-		http.Error(rw, err.Error(), http.StatusInternalServerError)
-	}
-}
-
-// Converts ProPublica bill API endoint to jsonapi format for use by Ember application.
-func HandleBill(client api.ApiClient, rw http.ResponseWriter, req *http.Request) {
-	vars := mux.Vars(req)
-	congressId, _ := strconv.Atoi(vars["congressId"])
-	result, apiError := client.GetBill(congressId, vars["billId"])
-	if apiError != nil {
-		http.Error(rw, apiError.Error(), http.StatusInternalServerError)
-		return
-	}
-
-	rw.Header().Set("Content-Type", jsonapi.MediaType)
-	if err := jsonapi.MarshalPayload(rw, result); err != nil {
-		http.Error(rw, err.Error(), http.StatusInternalServerError)
-	}
 }
 
 func main() {
@@ -134,6 +42,7 @@ func main() {
 
 	url, _ := url.Parse(config.ApiBase)
 	ttl, _ := time.ParseDuration(config.CacheTimeOut)
+
 	client := api.ApiClient{
 		Key:  config.ApiKey,
 		Base: url,
@@ -143,28 +52,19 @@ func main() {
 		Cache: cache.New(),
 		Ttl:   ttl,
 	}
-
 	router := mux.NewRouter()
 
 	upcomingBillsUrl := "/api/v1/legislation"
-	router.HandleFunc(upcomingBillsUrl, func(rw http.ResponseWriter, req *http.Request) {
-		HandleUpcomingBills(client, rw, req)
-	})
+	router.HandleFunc(upcomingBillsUrl, client.HandleUpcomingBills)
 
 	billUrl := "/api/v1/legislation/{billId}-{congressId:[0-9]+}"
-	router.HandleFunc(billUrl, func(rw http.ResponseWriter, req *http.Request) {
-		HandleBill(client, rw, req)
-	})
+	router.HandleFunc(billUrl, client.HandleBill)
 
 	cosponsorsUrl := "/api/v1/legislation/{billId}-{congressId:[0-9]+}/representatives"
-	router.HandleFunc(cosponsorsUrl, func(rw http.ResponseWriter, req *http.Request) {
-		HandleBillCosponsors(client, rw, req)
-	})
+	router.HandleFunc(cosponsorsUrl, client.HandleBillCosponsors)
 
 	statementsUrl := "/api/v1/legislation/{billId}-{congressId:[0-9]+}/statements"
-	router.HandleFunc(statementsUrl, func(rw http.ResponseWriter, req *http.Request) {
-		HandleBillStatements(client, rw, req)
-	})
+	router.HandleFunc(statementsUrl, client.HandleBillStatements)
 
 	router.PathPrefix("/").Handler(http.FileServer(http.Dir(config.EmberPath)))
 

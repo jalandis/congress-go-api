@@ -5,11 +5,14 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/jalandis/congress-go-api/api"
 	"github.com/jalandis/congress-go-api/cache"
+
+	"github.com/gorilla/mux"
 )
 
 func setupTest(t *testing.T) (*httptest.Server, api.ApiClient) {
@@ -101,6 +104,29 @@ func TestApi(t *testing.T) {
 
 			if len(result) <= 0 {
 				t.Errorf("API returned a bad response")
+			}
+		})
+
+		t.Run("Test API Bill Cosponsor Http Response", func(t *testing.T) {
+			t.Parallel()
+			_, apiClient := setupTest(t)
+
+			rw := httptest.NewRecorder()
+			req := httptest.NewRequest(http.MethodGet, "/", nil)
+			req = mux.SetURLVars(req, map[string]string{
+				"congressId": "115",
+				"billId":     "hr4249",
+			})
+
+			apiClient.HandleBillCosponsors(rw, req)
+
+			if rw.Code != http.StatusOK {
+				t.Errorf("Expected status OK. Got: %d", rw.Code)
+			}
+
+			results := rw.Body.String()
+			if !strings.HasPrefix(results, "{\"data\":[{") {
+				t.Errorf("Expected data results: %s", results)
 			}
 		})
 	})
