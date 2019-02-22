@@ -37,6 +37,10 @@ Run Server:
 
     go run github.com/jalandis/congress-go-api/main.go --config_path ./config.json
 
+After starting the server, the following url can be used to load an example JSON response to confirm proper setup.
+
+    http://localhost:8080/api/v1/legislation
+
 ### Ember FrontEnd
 
 This API project serves a [Congress Ember application](https://github.com/jalandis/congress-ember) and will require the Ember app be built locally for testing, development, or demo.
