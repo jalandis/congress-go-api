@@ -2,7 +2,7 @@
 
 Backend API that wraps the [ProPublic Congress API](https://www.propublica.org/datastore/api/propublica-congress-api).
 
-* Handles API Key securily
+* Handles API Key securely
 * Caches API requests for 24 hours
 * Converts ProPublica API responses to jsonapi format
 * Serves Ember site
@@ -19,7 +19,7 @@ The application has its settings passed in through a [JSON configuration file](h
 
     {
         "Port": 8080,
-        "Public": "/home/jalandis/workspace/nodejs/congress-ember/dist",
+        "EmberPath": "***/congress-ember/dist",
         "ApiBase": "https://api.propublica.org/congress/v1",
         "ApiKey": "***",
         "CacheTimeOut": "24h"
@@ -41,7 +41,7 @@ Run Server:
 
 This API project serves the [Congress Ember application](https://github.com/jalandis/congress-ember) and will require that project be built locally for testing, development, or demo.
 
-Please following the *installation* and *build* sections of the [Ember README](https://github.com/jalandis/congress-ember/README.md) and update the path of the *Public* configuration value.
+Please following the *installation* and *build* sections of the [Ember README](https://github.com/jalandis/congress-ember/blob/master/README.md) and update the path of the *EmberPath* configuration value.
 
 ## Helpful Go Commands
 
